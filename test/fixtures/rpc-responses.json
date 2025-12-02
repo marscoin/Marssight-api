@@ -1,0 +1,154 @@
+{
+  "blocks": {
+    "sample": {
+      "hash": "000000000185678d3d7ecc9962c96418174431f93fe20bf216d5565272423f74",
+      "confirmations": 100,
+      "size": 346,
+      "height": 71619,
+      "version": 2,
+      "merkleroot": "9a326cb524aa2e5bc926b8c1f6de5b01257929ee02158054b55aae93a55ec9dd",
+      "tx": [
+        "9a326cb524aa2e5bc926b8c1f6de5b01257929ee02158054b55aae93a55ec9dd"
+      ],
+      "time": 1395631497,
+      "nonce": 3960980741,
+      "bits": "1c018c14",
+      "difficulty": 0.00059047,
+      "chainwork": "00000000000000000000000000000000000000000000000000000ab9d0e2a41a",
+      "previousblockhash": "00000000003dfa4e69fef7c03f09ea5e76bb4e82987bb47a4c82376ae1e6f7e2",
+      "nextblockhash": "000000000121941b3b10d76fbe67b35993df91eb3398e9153e140b4f6213cb84"
+    },
+    "genesis": {
+      "hash": "91ec5f25ee9a0ffa1af7d4f7f6c3c6a7f4f5e5c5b5a5d5e5f5a5b5c5d5e5f5a5",
+      "height": 0,
+      "time": 1371387277,
+      "tx": ["4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"]
+    }
+  },
+  "transactions": {
+    "coinbase": {
+      "hex": "01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff0704ffff001d0104ffffffff0100f2052a0100000043410496b538e853519c726a2c91e61ec11600ae1390813a627c66fb8be7947be63c52da7589379515d4e0a604f8141781e62294721166bf621e73a82cbf2342c858eeac00000000",
+      "txid": "9a326cb524aa2e5bc926b8c1f6de5b01257929ee02158054b55aae93a55ec9dd",
+      "version": 1,
+      "locktime": 0,
+      "vin": [
+        {
+          "coinbase": "04ffff001d0104",
+          "sequence": 4294967295
+        }
+      ],
+      "vout": [
+        {
+          "value": 50.00000000,
+          "n": 0,
+          "scriptPubKey": {
+            "asm": "0496b538e853519c726a2c91e61ec11600ae1390813a627c66fb8be7947be63c52da7589379515d4e0a604f8141781e62294721166bf621e73a82cbf2342c858ee OP_CHECKSIG",
+            "hex": "410496b538e853519c726a2c91e61ec11600ae1390813a627c66fb8be7947be63c52da7589379515d4e0a604f8141781e62294721166bf621e73a82cbf2342c858eeac",
+            "type": "pubkey",
+            "addresses": ["MJvWsioZF1xXH2V4rGMjaNVtdkVxNRJwt2"]
+          }
+        }
+      ],
+      "blockhash": "000000000185678d3d7ecc9962c96418174431f93fe20bf216d5565272423f74",
+      "confirmations": 100,
+      "time": 1395631497,
+      "blocktime": 1395631497
+    },
+    "regular": {
+      "hex": "0100000001abcd1234...",
+      "txid": "f6e80d4fd1a2377406856c67d0cee5ac7e5120993ff97e617ca9aac33b4c6b1e",
+      "version": 1,
+      "locktime": 0,
+      "vin": [
+        {
+          "txid": "91800d80bb4c69b238c9bfd94eb5155ab821e6b25cae5c79903d12853bbb4ed5",
+          "vout": 0,
+          "scriptSig": {
+            "asm": "304402...",
+            "hex": "4730440220..."
+          },
+          "sequence": 4294967295
+        }
+      ],
+      "vout": [
+        {
+          "value": 1.50000000,
+          "n": 0,
+          "scriptPubKey": {
+            "asm": "OP_DUP OP_HASH160 abcd1234... OP_EQUALVERIFY OP_CHECKSIG",
+            "hex": "76a914abcd1234...88ac",
+            "type": "pubkeyhash",
+            "addresses": ["mm8CDNJnk8PtQPEtTns2ah5nmxN63ENHtY"]
+          }
+        },
+        {
+          "value": 48.49990000,
+          "n": 1,
+          "scriptPubKey": {
+            "asm": "OP_DUP OP_HASH160 efgh5678... OP_EQUALVERIFY OP_CHECKSIG",
+            "hex": "76a914efgh5678...88ac",
+            "type": "pubkeyhash",
+            "addresses": ["mp3Rzxx9s1A21SY3sjJ3CQoa2Xjph7e5eS"]
+          }
+        }
+      ],
+      "blockhash": "000000000185678d3d7ecc9962c96418174431f93fe20bf216d5565272423f74",
+      "confirmations": 50,
+      "time": 1395631497,
+      "blocktime": 1395631497
+    },
+    "unconfirmed": {
+      "hex": "0100000001...",
+      "txid": "unconfirmed123456789abcdef",
+      "version": 1,
+      "locktime": 0,
+      "vin": [
+        {
+          "txid": "previousTx123",
+          "vout": 0,
+          "scriptSig": {
+            "asm": "...",
+            "hex": "..."
+          },
+          "sequence": 4294967295
+        }
+      ],
+      "vout": [
+        {
+          "value": 10.00000000,
+          "n": 0,
+          "scriptPubKey": {
+            "asm": "...",
+            "hex": "...",
+            "type": "pubkeyhash",
+            "addresses": ["testAddress123"]
+          }
+        }
+      ],
+      "confirmations": 0
+    }
+  },
+  "blockIndex": {
+    "height71619": {
+      "blockHash": "000000000185678d3d7ecc9962c96418174431f93fe20bf216d5565272423f74"
+    }
+  },
+  "errors": {
+    "txNotFound": {
+      "code": -5,
+      "message": "No such mempool or blockchain transaction"
+    },
+    "blockNotFound": {
+      "code": -5,
+      "message": "Block not found"
+    },
+    "invalidAddress": {
+      "code": -3,
+      "message": "Invalid address"
+    },
+    "connectionError": {
+      "code": -1,
+      "message": "Connection refused"
+    }
+  }
+}

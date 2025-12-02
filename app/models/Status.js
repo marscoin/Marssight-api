@@ -14,10 +14,42 @@ Status.prototype.getInfo = function(next) {
   var that = this;
   async.series([
     function (cb) {
-      rpc.getInfo(function(err, info){
+      rpc.getBlockchainInfo(function(err, info){
         if (err) return cb(err);
 
         that.info = info.result;
+        return cb();
+      });
+    },
+  ], function (err) {
+    return next(err);
+  });
+};
+
+Status.prototype.getNetworkInfo = function(next) {
+  var that = this;
+  async.series([
+    function (cb) {
+      rpc.getNetworkInfo(function(err, networkinfo){
+        if (err) return cb(err);
+
+        that.networkinfo = networkinfo.result;
+        return cb();
+      });
+    },
+  ], function (err) {
+    return next(err);
+  });
+};
+
+Status.prototype.getMiningInfo = function(next) {
+  var that = this;
+  async.series([
+    function (cb) {
+      rpc.getMiningInfo(function(err, mininginfo){
+        if (err) return cb(err);
+
+        that.mininginfo = mininginfo.result;
         return cb();
       });
     },

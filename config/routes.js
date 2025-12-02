@@ -51,6 +51,10 @@ module.exports = function(app) {
   var currency = require('../app/controllers/currency');
   app.get(apiPrefix + '/currency', currency.index);
 
+  // Notary
+  var notary = require('../app/controllers/notary');
+  app.get(apiPrefix + '/notary', notary.index);
+
   // Email store plugin
   if (config.enableEmailstore) {
     var emailPlugin = require('../plugins/emailstore');

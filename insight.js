@@ -11,13 +11,15 @@ var HistoricSync = require('./lib/HistoricSync');
 var http = require('http');
 var https = require('https');
 var express = require('express');
-const { program } = require('commander');
+var program = require('commander');
 
 var config = require('./config/config');
 var logger = require('./lib/logger').logger;
-program.version(config.version)
+program
+  .version(config.version);
 
 // text title
+console.log("Node Engine: " + process.version);
 console.log(
   '\n\
     ____           _       __    __     ___          _ \n\
@@ -56,6 +58,8 @@ program.on('--help', function() {
   );
 });
 
+console.log(config);
+
 program.parse(process.argv);
 
 // create express app
@@ -66,14 +70,16 @@ require('./config/headers')(expressApp);
 
 // setup http/https base server
 var server;
-if (config.enableHTTPS) {
-  var serverOpts = {};
-  serverOpts.key = fs.readFileSync('./etc/test-key.pem');
-  serverOpts.cert = fs.readFileSync('./etc/test-cert.pem');
-  server = https.createServer(serverOpts, expressApp);
-} else {
+//if (config.enableHTTPS) {
+//if(false){
+//  var serverOpts = {};
+//  serverOpts.key = fs.readFileSync('/etc/letsencrypt/live/explore1.marscoin.org/privkey.pem');
+//  serverOpts.cert = fs.readFileSync('/etc/letsencrypt/live/explore1.marscoin.org/fullchain.pem');
+//  server = https.createServer(serverOpts, expressApp);
+//} else {
   server = http.createServer(expressApp);
-}
+//}
+//console.log(serverOpts.key)
 
 // Bootstrap models
 var models_path = __dirname + '/app/models';
@@ -124,6 +130,23 @@ if (peerSync) peerSync.allowReorgs = true;
 // socket.io
 var ios = require('socket.io')(server, config);
 require('./app/controllers/socket.js').init(ios);
+
+// Protection against socket.io buffer overflow attacks
+var parser = require('./node_modules/socket.io/node_modules/engine.io/node_modules/engine.io-parser');
+var originalDecode = parser.decodePayloadAsBinary;
+parser.decodePayloadAsBinary = function(data, callback) {
+  try {
+    // Limit payload to 10MB to prevent RangeError: Invalid string length
+    if (data && data.length > 10485760) {
+      console.error('[SECURITY] Blocked oversized socket.io payload:', data.length, 'bytes');
+      return callback(new Error('Payload too large'));
+    }
+    return originalDecode.call(this, data, callback);
+  } catch (err) {
+    console.error('[SECURITY] Parser error caught:', err.message);
+    return callback(err);
+  }
+};
 
 // plugins
 if (config.enableRatelimiter) {

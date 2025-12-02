@@ -1,53 +1,127 @@
 [
-   {
-      "poolName":"litecoinpool.org",
-      "url":"https://litecoinpool.org/",
-      "searchStrings":[
-         "litecoinpool.org"
+    {
+      "poolName": "Game.NET",
+      "url": "https://mars.our-game.net",
+      "searchStrings": [
+        "MQg8r9dZDkjQSt5U2k3LuXpvcHXfoeRevJ"
       ]
-   },
-   {
-      "poolName":"give-me-coins",
-      "url":"http://give-me-coins.com/",
-      "searchStrings":[
-         "give-me-coins.com"
+    },
+    {
+      "poolName": "WIN",
+      "url": "https://pools.win",
+      "searchStrings": [
+        "MNaiu5NJ13t4qxMzTnR9VFHvzAnNkWj9dv"
       ]
-   },
-   {
-      "poolName":"wemineltc",
-      "url":"https://www.wemineltc.com/",
-      "searchStrings":[
-         "wemineltc"
+    },
+    {
+        "poolName": "0769",
+        "url": "https://www.0769.it",
+        "searchStrings": [
+          "MDACc1eU58ULv4H37rNnqJtexrF47nvByP"
+        ]
+    },
+    {
+        "poolName": "MyPOOL",
+        "url": "https://miningmypool.com",
+        "searchStrings": [
+          "MRRG1g6uVJhFKQdyhbUxyGeoFjiy6HQYCF"
+        ]
+    }, 
+    {
+        "poolName": "M4People",
+        "url": "https://mining4people.com/pool/marscoin-pplns",
+        "searchStrings": [
+          "MPoCcJahDsuCC4g9LnkQoVALfFQuDHegPm"
+        ]
+    },  
+    {
+        "poolName": "Zapto",
+        "url": "https://mining-pool.zapto.org/#mars_pplns",
+        "searchStrings": [
+          "MMLhzvC62cpQsqwi6zRJUrGaxf9boRxzA5"
+        ]
+    },  
+    {
+        "poolName": "Lucky",
+        "url": "https://luckydogpool.com",
+        "searchStrings": [
+          "MX1Pr7tWvWgfehEZUYvZ6xDFxZVCsqfWjc",
+	  "MBbmqH2CWB2hXVEC1fyUuQ8wjBSTH5mpTD"
+        ]
+    },  
+    {
+        "poolName": "Zalmex",
+        "url": "https://zalmex.online",
+        "searchStrings": [
+          "MJe2zyRWp2zTzp3e4jFKJDry1Sz9UyuyKK",
+	  "MPV3m1c7TgushXCjLxMoa8S71vKQYF7XgX"
+        ]
+    },  
+    {
+        "poolName": "Aika",
+        "url": "https://aikapool.com/mars",
+        "searchStrings": [
+          "MQgsxQcNRxkvTBJFLPhwUCpLZDyMzgnF38"
+        ]
+    },
+    {
+        "poolName": "Zapto",
+        "url": "https://mining-pool.zapto.org/#mars_pplns",
+        "searchStrings": [
+          "MJ47kfG51i8hYjRtyuVHb5H2rFCQ8BkBrE"
+        ]
+    },
+    {
+        "poolName": "MiningMars",
+        "url": "http://mining-mars.com/",
+        "searchStrings": [
+          "MUWu58Bj7qHsF7b5A86zMRmX3MocqZEc3M",
+	  "MBMEfCyRqLhPeYcBafUUiy8a26ZyHugARV",
+	  "MWhLVNuU8G5fjgj9BwqArKyBRg98Y5cH7k"
+        ]
+    },
+    {
+        "poolName": "Spools",
+        "url": "https://spools.online/",
+        "searchStrings": [
+          "MRz4zRphc5Hk4hQKY4F9K9HhDwja7njF2u"
+        ]
+    },
+    {
+        "poolName": "Hash3030",
+        "url": "https://hash3030.xyz/",
+        "searchStrings": [
+          "MLRQQ9SdmVADbRLqvM6iw2DkaishjaWxKL",
+	  "MLRQQ9SdmVADbRLqvM6iw2DkaishjaWxKL"
+        ]
+    },
+    {
+	"poolName": "Longpool",
+        "url": "https://longpool.org/",
+        "searchStrings": [
+          "MDA2RELGxC1W7dY9XWxyMuF2poSNn1xYwi"
+        ]
+    },
+    {
+        "poolName": "MPFS",
+        "url": "https://mypoolfuckingsucks.com/#marscoin",
+        "searchStrings": [
+          "MGgHaVKZyJ9gdW8rx5he7zaDEdRXXZ5EFY"
+        ]
+    },
+    {
+        "poolName": "Hash-Hut",
+        "url": "https://hash-hut.net/",
+        "searchStrings": [
+          "MGtg8Hea48QL3sEGcfh1cqHMgn1aGsLNoz"
+        ]
+    },
+    {
+      "poolName": "AsicEU",
+      "url": "https://asic-miners.eu",
+      "searchStrings": [
+        "ME9a4buynVeu7vLuVec18gv2jwFrQbt1G6",
+	"MGMuK11oMrki69qNUFwwASUcaLUdgQcM1e"
       ]
-   },
-   {
-      "poolName":"Discus Fish",
-      "url":"http://f2pool.com/",
-      "searchStrings":[
-         "七彩神仙鱼",
-         "Made in China",
-         "Mined by user"
-      ]
-   },
-   {
-      "poolName":"Discus Fish Solo",
-      "url":"http://f2pool.com/",
-      "searchStrings":[
-         "For Pierce and Paul"
-      ]
-   },
-   {
-      "poolName":"GIVE-ME-COINS",
-      "url":"https://give-me-coins.com/",
-      "searchStrings":[
-         "Mined at GIVE-ME-COINS.com"
-      ]
-   },
-   {
-      "poolName":"hashfaster",
-      "url":"https://ltc.hashfaster.com/",
-      "searchStrings":[
-         "ltc.hashfaster.com/"
-      ]
-   }
-]
+  }
+  ]

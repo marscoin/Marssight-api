@@ -1,31 +1,31 @@
-# *Marssight API*
+# *Litesight API*
 
-*Marssight API* is an open-source Marscoin blockchain REST
-and websocket API. Marssight API runs in NodeJS and uses LevelDB for storage. 
+*Litesight API* is an open-source Litecoin blockchain REST
+and websocket API. Litesight API runs in NodeJS and uses LevelDB for storage. 
 
 This is a backend-only service. If you're looking for the web frontend application,
-take a look at https://github.com/marscoin/Marssight.
+take a look at https://github.com/pembo210/Litesight.
 
-*Marssight API* allows to develop Marscoin-related applications (such as wallets) that 
+*Litesight API* allows to develop Litecoin-related applications (such as wallets) that 
 require certain information from the blockchain that litecoind does not provide.
 
-A blockchain explorer front-end has been developed on top of *Marssight API*. It can
-be downloaded at [Github Litesight Repository](https://github.com/marscoin/Marssight).
+A blockchain explorer front-end has been developed on top of *Litesight API*. It can
+be downloaded at [Github Litesight Repository](https://github.com/pembo210/Litesight).
 
 
 ## Prerequisites
 
-* **marscoind** - Download and Install [marscoin](https://github.com/marscoin/marscoin)
+* **litecoind** - Download and Install [litecoin](https://github.com/litecoin-project/litecoin)
 
-*Marssight API* needs a *trusted* marscoind node to run. *Marssight API* will connect to the node
-through the RPC API, marscoin peer-to-peer protocol, and will even read its raw block .dat files for syncing.
+*Litesight API* needs a *trusted* litecoind node to run. *Litesight API* will connect to the node
+through the RPC API, litecoin peer-to-peer protocol, and will even read its raw block .dat files for syncing.
 
-Configure marscoind to listen to RPC calls and set `txindex` to true.
-The easiest way to do this is by copying `./etc/marscoind/marscoin.conf` to your
-marscoin data directory (usually `~/.marscoin` on Linux, `%appdata%\Marscoin\` on Windows,
-or `~/Library/Application Support/Marscoin` on Mac OS X).
+Configure litecoind to listen to RPC calls and set `txindex` to true.
+The easiest way to do this is by copying `./etc/litecoind/litecoin.conf` to your
+litecoin data directory (usually `~/.litecoin` on Linux, `%appdata%\Litecoin\` on Windows,
+or `~/Library/Application Support/Litecoin` on Mac OS X).
 
-marscoind must be running and must have finished downloading the blockchain **before** running *Marssight API*.litecoin
+litecoind must be running and must have finished downloading the blockchain **before** running *Litesight API*.litecoin
 
 
 * **Node.js v0.10.x** - Download and Install [Node.js](http://www.nodejs.org/download/).
@@ -35,9 +35,9 @@ marscoind must be running and must have finished downloading the blockchain **be
 ## Quick Install
   Check the Prerequisites section above before installing.
 
-  To install Marssight API, clone the main repository:
+  To install Litesight API, clone the main repository:
 
-    $ git clone https://github.com/marscoin/Marssight-api && cd Marssight-api
+    $ git clone https://github.com/pembo210/Litesight-api && cd Litesight-api
 
   Install dependencies:
 
@@ -45,7 +45,7 @@ marscoind must be running and must have finished downloading the blockchain **be
 
   Run the main application:
 
-    $ node Marssight.js
+    $ node Litesight.js
 
   Then open a browser and go to:
 
@@ -83,18 +83,18 @@ ENABLE_HTTPS # if "true" it will server using SSL/HTTPS
 
 ```
 
-Make sure that marscoind is configured to [accept incoming connections using 'rpcallowip'](https://en.bitcoin.it/wiki/Running_Bitcoin).
+Make sure that litecoind is configured to [accept incoming connections using 'rpcallowip'](https://en.bitcoin.it/wiki/Running_Bitcoin).
 
 In case the network is changed (testnet to livenet or vice versa) levelDB database needs to be deleted. This can be performed running:
 ```util/sync.js -D``` and waiting for *Litesight* to synchronize again.  Once the database is deleted, the sync.js process can be safely interrupted (CTRL+C) and continued from the synchronization process embedded in main app.
 
 ## Synchronization
 
-The initial synchronization process scans the blockchain from the paired marscoind server to update addresses and balances. *Marssight-api* needs exactly one trusted litecoind node to run. This node must have finished downloading the blockchain before running *Marssight-api*.
+The initial synchronization process scans the blockchain from the paired litecoind server to update addresses and balances. *Litesight-api* needs exactly one trusted litecoind node to run. This node must have finished downloading the blockchain before running *Litesight-api*.
 
-While *Marssight* is synchronizing the website can be accessed (the sync process is embedded in the webserver), but there may be missing data or incorrect balances for addresses. The 'sync' status is shown at the `/api/sync` endpoint.
+While *Litesight* is synchronizing the website can be accessed (the sync process is embedded in the webserver), but there may be missing data or incorrect balances for addresses. The 'sync' status is shown at the `/api/sync` endpoint.
 
-The blockchain can be read from marscoind's raw `.dat` files or RPC interface. 
+The blockchain can be read from litecoind's raw `.dat` files or RPC interface. 
 Reading the information from the `.dat` files is much faster so it's the
 recommended (and default) alternative. `.dat` files are scanned in the default
 location for each platform (for example, `~/.litecoin` on Linux). In case a
@@ -102,13 +102,13 @@ non-standard location is used, it needs to be defined (see the Configuration sec
 As of June 2014, using `.dat` files the sync process takes 9 hrs.
 for livenet and 30 mins. for testnet.
 
-While synchronizing the blockchain, *Marssight-api* listens for new blocks and
-transactions relayed by the litecoind node. Those are also stored on *Marssight-api*'s database.
-In case *Marssight-api* is shutdown for a period of time, restarting it will trigger
+While synchronizing the blockchain, *Litesight-api* listens for new blocks and
+transactions relayed by the litecoind node. Those are also stored on *Litesight-api*'s database.
+In case *Litesight-api* is shutdown for a period of time, restarting it will trigger
 a partial (historic) synchronization of the blockchain. Depending on the size of
 that synchronization task, a reverse RPC or forward `.dat` syncing strategy will be used.
 
-If litecoind is shutdown, *Marssight-api* needs to be stopped and restarted
+If litecoind is shutdown, *Litesight-api* needs to be stopped and restarted
 once litecoind is restarted.
 
 ### Syncing old blockchain data manually
@@ -120,7 +120,7 @@ once litecoind is restarted.
   Check util/sync.js --help for options, particulary -D to erase the current DB.
 
   *NOTE*: there is no need to run this manually since the historic synchronization
-  is built in into the web application. Running *Marssight-api* normally will trigger
+  is built in into the web application. Running *Litesight-api* normally will trigger
   the historic sync automatically.
 
 
@@ -129,7 +129,7 @@ once litecoind is restarted.
 To store the blockchain and address related information, *Litesight-api* uses LevelDB.
 Two DBs are created: txs and blocks. By default these are stored on
 
-  ``~/.marscoin-insight/``
+  ``~/.litecoin-insight/``
 
 Please note that some older versions of Litesight-API store that on `<Litesight's root>/db`.
 
@@ -146,7 +146,7 @@ To run the tests
 ```$ grunt test```
 
 
-Contributions and suggestions are welcome at [Marssight-api github repository](https://github.com/pembo210/Litesight-api).
+Contributions and suggestions are welcome at [Litesight-api github repository](https://github.com/pembo210/Litesight-api).
 
 ## Caching schema
 
@@ -164,7 +164,7 @@ to ignore the cache in a particular API request.
 
 ## API
 
-By default, Marssight provides a REST API at `/api`, but this prefix is configurable from the var `apiPrefix` in the `config.js` file.
+By default, Litesight provides a REST API at `/api`, but this prefix is configurable from the var `apiPrefix` in the `config.js` file.
 
 The end-points are:
 

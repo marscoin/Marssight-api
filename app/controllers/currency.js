@@ -1,60 +1,70 @@
 'use strict';
 
+var http = require('https');
 var config = require('../../config/config');
 
 // Set the initial vars
 var timestamp = +new Date(),
-    delay = config.currencyRefresh * 60000,
-    bitstampRate = 0;
+    delay = config.currencyRefresh * 60000, // Assuming config.currencyRefresh is set
+    marscoinRate = 0; // This will store the Marscoin rate
 
 exports.index = function(req, res) {
-
-  var _xhr = function() {
-    if (typeof XMLHttpRequest !== 'undefined' && XMLHttpRequest !== null) {
-      return new XMLHttpRequest();
-    } else if (typeof require !== 'undefined' && require !== null) {
-      var XMLhttprequest = require('xmlhttprequest').XMLHttpRequest;
-      return new XMLhttprequest();
-    }
-  };
-
   var _request = function(url, cb) {
-    var request;
-    request = _xhr();
-    request.open('GET', url, true);
-    request.onreadystatechange = function() {
-      if (request.readyState === 4) {
-        if (request.status === 200) {
-          return cb(false, request.responseText);
+    http.get(url, function(response) {
+      var body = '';
+      response.on('data', function(d) {
+        body += d;
+      });
+      response.on('end', function() {
+        if (response.statusCode === 200) {
+          cb(false, body);
+        } else {
+          cb(true, {
+            status: response.statusCode,
+            message: 'Request error'
+          });
         }
-
-        return cb(true, {
-          status: request.status,
-          message: 'Request error'
-        });
-      }
-    };
-
-    return request.send(null);
+      });
+    }).on('error', function(e) {
+      cb(true, {
+        status: '500',
+        message: e.message
+      });
+    });
   };
 
   // Init
   var currentTime = +new Date();
-  if (bitstampRate === 0 || currentTime >= (timestamp + delay)) {
+  if (marscoinRate === 0 || currentTime >= (timestamp + delay)) {
     timestamp = currentTime;
 
-    _request('https://www.bitstamp.net/api/ticker/', function(err, data) {
-      if (!err) bitstampRate = parseFloat(JSON.parse(data).last);
+    _request('https://price.marscoin.org/json/', function(err, data) {
+      if (!err) {
+        try {
+          // Parsing the JSON response to extract the Marscoin price
+          var jsonData = JSON.parse(data);
+          var marscoinPrice = jsonData.data["154"].quote.USD.price;
+          marscoinRate = marscoinPrice; // Store the latest price
 
-      res.jsonp({
-        status: 200,
-        data: { bitstamp: bitstampRate }
-      });
+          res.jsonp({
+            status: 200,
+            data: { price: marscoinRate }
+          });
+        } catch (parseError) {
+          // Handle JSON parsing error
+          console.error('Error parsing Marscoin price JSON:', parseError.message);
+          console.error('Raw response:', data);
+          res.status(500).send({ error: 'Invalid response format from price API' });
+        }
+      } else {
+        // Handle error: Could log the error or return a message
+        res.status(500).send({ error: 'Failed to fetch Marscoin price' });
+      }
     });
   } else {
     res.jsonp({
       status: 200,
-      data: { bitstamp: bitstampRate }
+      data: { price: marscoinRate }
     });
   }
 };

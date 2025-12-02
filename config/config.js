@@ -19,18 +19,18 @@ function getUserHome() {
   return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
 }
 
-var home = process.env.INSIGHT_DB || (getUserHome() + '/.marscoin-insight');
+var home = process.env.INSIGHT_DB || (getUserHome() + '/.marscoin-chain');
 
 if (process.env.INSIGHT_NETWORK === 'livenet') {
   env = 'livenet';
   db = home;
-  port = '3005';
+  port = '4005';
   b_port = '9981';
   p2p_port = '8338';
 } else {
   env = 'testnet';
   db = home + '/testnet';
-  port = '3006';
+  port = '4006';
   b_port = '18338';
   p2p_port = '18339';
 }
@@ -56,12 +56,12 @@ var isWin = /^win/.test(process.platform);
 var isMac = /^darwin/.test(process.platform);
 var isLinux = /^linux/.test(process.platform);
 if (!dataDir) {
-  if (isWin) dataDir = '%APPDATA%\\Marscoin\\';
-  if (isMac) dataDir = process.env.HOME + '/Library/Application Support/Marscoin/';
+  if (isWin) dataDir = '%APPDATA%\\Litecoin\\';
+  if (isMac) dataDir = process.env.HOME + '/Library/Application Support/Litecoin/';
   if (isLinux) dataDir = process.env.HOME + '/.marscoin/';
 }
 dataDir += network === 'testnet' ? 'testnet3' : '';
-var forceRPCsync = process.env.INSIGHT_FORCE_RPC_SYNC;
+var forceRPCsync = process.env.INSIGHT_FORCE_RPC_SYNC === 'true';
 var safeConfirmations = process.env.INSIGHT_SAFE_CONFIRMATIONS || 6;
 var ignoreCache = process.env.INSIGHT_IGNORE_CACHE || 0;
 
@@ -69,7 +69,7 @@ var ignoreCache = process.env.INSIGHT_IGNORE_CACHE || 0;
 var bitcoindConf = {
   protocol: process.env.BITCOIND_PROTO || 'http',
   user: process.env.BITCOIND_USER || 'marscoinrpc',
-  pass: process.env.BITCOIND_PASS || '65VqB2sComWaHzMPPM5BR5wUNu2jnkouSvgQgSFawQgf',
+  pass: process.env.BITCOIND_PASS || 'your_rpc_password_here',
   host: process.env.BITCOIND_HOST || '127.0.0.1',
   port: process.env.BITCOIND_PORT || b_port,
   p2pPort: process.env.BITCOIND_P2P_PORT || p2p_port,
