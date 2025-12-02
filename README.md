@@ -1,394 +1,124 @@
-# *Litesight API*
+# Marssight API
 
-*Litesight API* is an open-source Litecoin blockchain REST
-and websocket API. Litesight API runs in NodeJS and uses LevelDB for storage. 
+**Marssight API** is an open-source Marscoin blockchain REST and WebSocket API. Built with pure JavaScript modules for Node.js 24+, it provides a modern, native-addon-free backend for the Marssight blockchain explorer.
 
-This is a backend-only service. If you're looking for the web frontend application,
-take a look at https://github.com/pembo210/Litesight.
+## Features
 
-*Litesight API* allows to develop Litecoin-related applications (such as wallets) that 
-require certain information from the blockchain that litecoind does not provide.
-
-A blockchain explorer front-end has been developed on top of *Litesight API*. It can
-be downloaded at [Github Litesight Repository](https://github.com/pembo210/Litesight).
-
+- **Pure JavaScript** - No native addons required, works on any platform
+- **Node.js 24+** - Built for modern JavaScript with ES modules support
+- **REST API** - Full blockchain data access via HTTP endpoints
+- **WebSocket** - Real-time block and transaction updates
+- **LevelDB Storage** - Fast indexed blockchain data using classic-level
 
 ## Prerequisites
 
-* **litecoind** - Download and Install [litecoin](https://github.com/litecoin-project/litecoin)
+- **Node.js 24+** - Required for modern JavaScript features
+- **Marscoin Core** - Running full node with RPC enabled and `txindex=1`
 
-*Litesight API* needs a *trusted* litecoind node to run. *Litesight API* will connect to the node
-through the RPC API, litecoin peer-to-peer protocol, and will even read its raw block .dat files for syncing.
+### Marscoin Node Configuration
 
-Configure litecoind to listen to RPC calls and set `txindex` to true.
-The easiest way to do this is by copying `./etc/litecoind/litecoin.conf` to your
-litecoin data directory (usually `~/.litecoin` on Linux, `%appdata%\Litecoin\` on Windows,
-or `~/Library/Application Support/Litecoin` on Mac OS X).
+Ensure your `~/.marscoin/marscoin.conf` has:
 
-litecoind must be running and must have finished downloading the blockchain **before** running *Litesight API*.litecoin
-
-
-* **Node.js v0.10.x** - Download and Install [Node.js](http://www.nodejs.org/download/).
-
-* **NPM** - Node.js package manager, should be automatically installed when you get node.js.
-
-## Quick Install
-  Check the Prerequisites section above before installing.
-
-  To install Litesight API, clone the main repository:
-
-    $ git clone https://github.com/pembo210/Litesight-api && cd Litesight-api
-
-  Install dependencies:
-
-    $ npm install
-
-  Run the main application:
-
-    $ node Litesight.js
-
-  Then open a browser and go to:
-
-    http://localhost:3001
-
-  Please note that the app will need to sync its internal database
-  with the blockchain state, which may take some time. You can check
-  sync progress at http://localhost:3001/api/sync.
-
-
-## Configuration
-
-All configuration is specified in the [config](config/) folder, particularly the [config.js](config/config.js) file. There you can specify your application name and database name. Certain configuration values are pulled from environment variables if they are defined:
-
-```
-BITCOIND_HOST         # RPC litecoind host
-BITCOIND_PORT         # RPC litecoind Port
-BITCOIND_P2P_HOST     # P2P litecoind Host (will default to BITCOIND_HOST, if specified)
-BITCOIND_P2P_PORT     # P2P litecoind Port
-BITCOIND_USER         # RPC username
-BITCOIND_PASS         # RPC password
-BITCOIND_DATADIR      # litecoind datadir. 'testnet3' will be appended automatically if testnet is used. NEED to finish with '/'. e.g: `/vol/data/`
-INSIGHT_NETWORK [= 'livenet' | 'testnet']
-INSIGHT_PORT          # Litesight api port
-INSIGHT_DB            # Path where to store Litesight's internal DB. (defaults to $HOME/.litecoin-insight)
-INSIGHT_SAFE_CONFIRMATIONS=6  # Nr. of confirmation needed to start caching transaction information   
-INSIGHT_IGNORE_CACHE  # True to ignore cache of spents in transaction, with more than INSIGHT_SAFE_CONFIRMATIONS confirmations. This is useful for tracking double spents for old transactions.
-ENABLE_MAILBOX # if "true" will enable mailbox plugin
-ENABLE_CLEANER # if "true" will enable message db cleaner plugin
-ENABLE_MONITOR # if "true" will enable message db monitor plugin
-ENABLE_EMAILSTORE # if "true" will enable a plugin to store data with a validated email address
-ENABLE_RATELIMITER # if "true" will enable the ratelimiter plugin
-LOGGER_LEVEL # defaults to 'info', can be 'debug','verbose','error', etc.
-ENABLE_HTTPS # if "true" it will server using SSL/HTTPS
-
+```conf
+rpcuser=marscoinrpc
+rpcpassword=your_secure_password
+rpcport=9981
+rpcallowip=127.0.0.1
+txindex=1
 ```
 
-Make sure that litecoind is configured to [accept incoming connections using 'rpcallowip'](https://en.bitcoin.it/wiki/Running_Bitcoin).
+## Quick Start
 
-In case the network is changed (testnet to livenet or vice versa) levelDB database needs to be deleted. This can be performed running:
-```util/sync.js -D``` and waiting for *Litesight* to synchronize again.  Once the database is deleted, the sync.js process can be safely interrupted (CTRL+C) and continued from the synchronization process embedded in main app.
+### Install
 
-## Synchronization
-
-The initial synchronization process scans the blockchain from the paired litecoind server to update addresses and balances. *Litesight-api* needs exactly one trusted litecoind node to run. This node must have finished downloading the blockchain before running *Litesight-api*.
-
-While *Litesight* is synchronizing the website can be accessed (the sync process is embedded in the webserver), but there may be missing data or incorrect balances for addresses. The 'sync' status is shown at the `/api/sync` endpoint.
-
-The blockchain can be read from litecoind's raw `.dat` files or RPC interface. 
-Reading the information from the `.dat` files is much faster so it's the
-recommended (and default) alternative. `.dat` files are scanned in the default
-location for each platform (for example, `~/.litecoin` on Linux). In case a
-non-standard location is used, it needs to be defined (see the Configuration section).
-As of June 2014, using `.dat` files the sync process takes 9 hrs.
-for livenet and 30 mins. for testnet.
-
-While synchronizing the blockchain, *Litesight-api* listens for new blocks and
-transactions relayed by the litecoind node. Those are also stored on *Litesight-api*'s database.
-In case *Litesight-api* is shutdown for a period of time, restarting it will trigger
-a partial (historic) synchronization of the blockchain. Depending on the size of
-that synchronization task, a reverse RPC or forward `.dat` syncing strategy will be used.
-
-If litecoind is shutdown, *Litesight-api* needs to be stopped and restarted
-once litecoind is restarted.
-
-### Syncing old blockchain data manually
-
-  Old blockchain data can be manually synced issuing:
-
-    $ util/sync.js
-
-  Check util/sync.js --help for options, particulary -D to erase the current DB.
-
-  *NOTE*: there is no need to run this manually since the historic synchronization
-  is built in into the web application. Running *Litesight-api* normally will trigger
-  the historic sync automatically.
-
-
-### DB storage requirement
-
-To store the blockchain and address related information, *Litesight-api* uses LevelDB.
-Two DBs are created: txs and blocks. By default these are stored on
-
-  ``~/.litecoin-insight/``
-
-Please note that some older versions of Litesight-API store that on `<Litesight's root>/db`.
-
-This can be changed at config/config.js. As of June 2014, storing the livenet blockchain takes ~35GB of disk space (2GB for the testnet).
-
-## Development
-
-To run Litesight locally for development with grunt:
-
-```$ NODE_ENV=development grunt```
-
-To run the tests
-
-```$ grunt test```
-
-
-Contributions and suggestions are welcome at [Litesight-api github repository](https://github.com/pembo210/Litesight-api).
-
-## Caching schema
-
-Since v0.2 a new cache schema has been introduced. Only information from transactions with
-INSIGHT_SAFE_CONFIRMATIONS settings will be cached (by default SAFE_CONFIRMATIONS=6). There 
-are 3 different caches:
- * Number of confirmations 
- * Transaction output spent/unspent status
- * scriptPubKey for unspent transactions
-
-Cache data is only populated on request, i.e., only after accessing the required data for
-the first time, the information is cached, there is not pre-caching procedure.  To ignore 
-cache by default, use INSIGHT_IGNORE_CACHE. Also, address related calls support `?noCache=1`
-to ignore the cache in a particular API request.
-
-## API
-
-By default, Litesight provides a REST API at `/api`, but this prefix is configurable from the var `apiPrefix` in the `config.js` file.
-
-The end-points are:
-
-
-### Block
-```
-  /api/block/[:hash]
-  /api/block/00000000a967199a2fad0877433c93df785a8d8ce062e5f9b451cd1397bdbf62
-```
-### Transaction
-```
-  /api/tx/[:txid]
-  /api/tx/525de308971eabd941b139f46c7198b5af9479325c2395db7f2fb5ae8562556c
-```
-### Address
-```
-  /api/addr/[:addr][?noTxList=1&noCache=1]
-  /api/addr/mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5?noTxList=1
-```
-### Address Properties
-```
-  /api/addr/[:addr]/balance
-  /api/addr/[:addr]/totalReceived
-  /api/addr/[:addr]/totalSent
-  /api/addr/[:addr]/unconfirmedBalance
-```
-The response contains the value in Satoshis.
-### Unspent Outputs
-```
-  /api/addr/[:addr]/utxo[?noCache=1]
-```
-Sample return:
-``` json
-[
-    {
-      address: "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
-      txid: "dbfdc2a0d22a8282c4e7be0452d595695f3a39173bed4f48e590877382b112fc",
-      vout: 0,
-      ts: 1401276201,
-      scriptPubKey: "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
-      amount: 0.001,
-      confirmations: 3
-    },
-    {
-      address: "n2PuaAguxZqLddRbTnAoAuwKYgN2w2hZk7",
-      txid: "e2b82af55d64f12fd0dd075d0922ee7d6a300f58fe60a23cbb5831b31d1d58b4",
-      vout: 0,
-      ts: 1401226410,
-      scriptPubKey: "76a914e50575162795cd77366fb80d728e3216bd52deac88ac",
-      amount: 0.001,
-      confirmation: 6    
-      confirmationsFromCache: true,
-    }
-]
-```
-Please note that in case confirmations are cached (which happens by default when the number of confirmations is bigger that INSIGHT_SAFE_CONFIRMATIONS) the response will include the pair confirmationsFromCache:true, and confirmations will equal INSIGHT_SAFE_CONFIRMATIONS. See noCache and INSIGHT_IGNORE_CACHE options for details.
-
-
-
-### Unspent Outputs for multiple addresses
-GET method:
-```
-  /api/addrs/[:addrs]/utxo
-  /api/addrs/2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f/utxo
+```bash
+git clone https://github.com/marscoin/Marssight-api.git
+cd Marssight-api
+npm install
 ```
 
-POST method:
-```
-  /api/addrs/utxo
+### Run
+
+```bash
+INSIGHT_NETWORK=livenet \
+BITCOIND_PASS=your_rpc_password \
+INSIGHT_FORCE_RPC_SYNC=true \
+node insight.js
 ```
 
-POST params:
-```
-addrs: 2NF2baYuJAkCKo5onjUKEPdARQkZ6SYyKd5,2NAre8sX2povnjy4aeiHKeEh97Qhn97tB1f
-```
+The API will be available at `http://localhost:4005`
 
-### Transactions by Block
-```
-  /api/txs/?block=HASH
-  /api/txs/?block=00000000fa6cf7367e50ad14eb0ca4737131f256fc4c5841fd3c3f140140e6b6
-```
-### Transactions by Address
-```
-  /api/txs/?address=ADDR
-  /api/txs/?address=mmhmMNfBiZZ37g1tgg2t8DDbNoEdqKVxAL
-```
-### Transaction broadcasting
-POST method:
-```
-  /api/tx/send
-```
-POST params:
-```
-  rawtx: "signed transaction as hex string"
+## Environment Variables
 
-  eg
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `INSIGHT_NETWORK` | Network mode (`livenet` or `testnet`) | `testnet` |
+| `INSIGHT_PORT` | API server port | `4005` (livenet), `4006` (testnet) |
+| `BITCOIND_USER` | RPC username | `marscoinrpc` |
+| `BITCOIND_PASS` | RPC password | - |
+| `BITCOIND_HOST` | RPC host | `127.0.0.1` |
+| `BITCOIND_PORT` | RPC port | `9981` (livenet), `18338` (testnet) |
+| `INSIGHT_FORCE_RPC_SYNC` | Force RPC sync mode | `false` |
 
-  rawtx: 01000000017b1eabe0209b1fe794124575ef807057c77ada2138ae4fa8d6c4de0398a14f3f00000000494830450221008949f0cb400094ad2b5eb399d59d01c14d73d8fe6e96df1a7150deb388ab8935022079656090d7f6bac4c9a94e0aad311a4268e082a725f8aeae0573fb12ff866a5f01ffffffff01f0ca052a010000001976a914cbc20a7664f2f69e5355aa427045bc15e7c6c77288ac00000000
+## API Endpoints
+
+### Blocks
 
 ```
-POST response:
-```
-  {
-      txid: [:txid]
-  }
-
-  eg
-
-  {
-      txid: "c7736a0a0046d5a8cc61c8c3c2821d4d7517f5de2bc66a966011aaa79965ffba"
-  }
+GET /api/block/:hash          # Get block by hash
+GET /api/block-index/:height  # Get block hash by height
+GET /api/blocks               # Get blocks list
 ```
 
-### Historic blockchain data sync status
-```
-  /api/sync
-```
+### Transactions
 
-### Live network p2p data sync status
 ```
-  /api/peer
+GET /api/tx/:txid             # Get transaction by ID
+GET /api/txs                  # Get transactions list
+GET /api/rawtx/:txid          # Get raw transaction
 ```
 
-### Status of the litecoin network
+### Addresses
+
 ```
-  /api/status?q=xxx
-```
-
-Where "xxx" can be:
-
- * getInfo
- * getDifficulty
- * getTxOutSetInfo
- * getBestBlockHash
- * getLastBlockHash
-
-## Web Socket API
-The web socket API is served using [socket.io](http://socket.io).
-
-The following are the events published by Litesight:
-
-'tx': new transaction received from network. This event is published in the 'inv' room. Data will be a app/models/Transaction object.
-Sample output:
-```
-{
-  "txid":"00c1b1acb310b87085c7deaaeba478cef5dc9519fab87a4d943ecbb39bd5b053",
-  "processed":false
-  ...
-}
+GET /api/addr/:address        # Get address info
+GET /api/addr/:address/utxo   # Get address UTXOs
+GET /api/addr/:address/balance # Get address balance
 ```
 
+### Status
 
-'block': new block received from network. This event is published in the 'inv' room. Data will be a app/models/Block object.
-Sample output:
 ```
-{
-  "hash":"000000004a3d187c430cd6a5e988aca3b19e1f1d1727a50dead6c8ac26899b96",
-  "time":1389789343,
-  ...
-}
+GET /api/sync                 # Get sync status
+GET /api/status               # Get node status
+GET /api/peer                 # Get peer info
 ```
 
-'<litecoinAddress>': new transaction concerning <litecoinAddress> received from network. This event is published in the '<litecoinAddress>' room.
+## Pure JavaScript Modules
 
-'status': every 1% increment on the sync task, this event will be triggered. This event is published in the 'sync' room.
+This version replaces native C++ addons with pure JavaScript implementations:
 
-Sample output:
+- **lib/base58.js** - Base58/Base58Check encoding (replaces base58-native)
+- **lib/leveldb.js** - LevelDB wrapper using classic-level (replaces leveldown)
+- **lib/microtime.js** - Microsecond timing (replaces native microtime)
+- **lib/bufferUtils.js** - Buffer manipulation utilities
+
+## Testing
+
+Run the pure JavaScript test suite:
+
+```bash
+npm run test:pure
 ```
-{
-  blocksToSync: 164141,
-  syncedBlocks: 475,
-  upToExisting: true,
-  scanningBackward: true,
-  isEndGenesis: true,
-  end: "000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943",
-  isStartGenesis: false,
-  start: "000000009f929800556a8f3cfdbe57c187f2f679e351b12f7011bfc276c41b6d"
-}
-```
 
-### Example Usage
+## Frontend
 
-The following html page connects to the socket.io Litesight API and listens for new transactions.
+For the web frontend, see [Marssight](https://github.com/marscoin/Marssight).
 
-html
-```
-<html>
-<body>
-  <script src="http://<Litesight-server>:<port>/socket.io/socket.io.js"></script>
-  <script>
-    eventToListenTo = 'tx'
-    room = 'inv'
+## About Marscoin
 
-    var socket = io("http://<Litesight-server>:<port>/");
-    socket.on('connect', function() {
-      // Join the room.
-      socket.emit('subscribe', room);
-    })
-    socket.on(eventToListenTo, function(data) {
-      console.log("New transaction received: " + data.txid)
-    })
-  </script>
-</body>
-</html>
-```
+Marscoin is the cryptocurrency designed for the future settlement of Mars. Learn more at [marscoin.org](https://www.marscoin.org).
 
 ## License
-(The MIT License)
 
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+MIT License - Based on Bitcore Insight API by BitPay.
